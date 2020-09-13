@@ -8,6 +8,7 @@ import 'apputils.dart';
 void main() {
   runApp(
     MaterialApp(
+      debugShowCheckedModeBanner: false,
       initialRoute: AppUtils.homePage,
       routes:{
         AppUtils.homePage: (context) => HomePage(),
