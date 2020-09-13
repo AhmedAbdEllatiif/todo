@@ -52,13 +52,14 @@ class TaskCardWidget extends StatelessWidget {
 class CustomFloatingActionButton extends StatelessWidget {
 
   final String icon;
-  final int backgroundColor;
+  final int startColor;
+  final int endColor;
   final double radius;
   final double paddingRight;
   final double paddingBottom;
   final VoidCallback  onClicked;
 
-  CustomFloatingActionButton({this.backgroundColor,this.radius,this.icon,this.paddingRight,this.paddingBottom,this.onClicked});
+  CustomFloatingActionButton({this.startColor,this.endColor,this.radius,this.icon,this.paddingRight,this.paddingBottom,this.onClicked});
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +75,12 @@ class CustomFloatingActionButton extends StatelessWidget {
             image: AssetImage('${AppUtils.imagesDirectory}$icon'),
           ),
           decoration: BoxDecoration(
-              color: Color(backgroundColor??0xFF7349FE),
+            gradient: LinearGradient(
+              colors: [Color(startColor??0xFF7349FE),Color(endColor??0xFF643FD8)],
+                  begin: Alignment(0.0,-1.0),
+              end: Alignment(0.0,1.0)
+            ),
+              color: Color(startColor??0xFF7349FE),
               borderRadius: BorderRadius.circular(radius??20.0)),
         ),
       ),
@@ -89,7 +95,7 @@ class TodoWidget extends StatelessWidget {
   final String text;
   final bool isDone;
   TodoWidget({this.text,@required this.isDone});
-
+  WidgetsHelper widgetsHelper = WidgetsHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -104,35 +110,23 @@ class TodoWidget extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Container(
-              width: 20.0,
-              height: 20.0,
-              decoration: BoxDecoration(
-                  color: isDone? Color(0xFF7349FE) : Colors.transparent,
-                borderRadius: BorderRadius.circular(6.0),
-                border: isDone ? null : Border.all(
-                    color: Color(0xFF86829D),
-                    width: 1.5
-              )
-              ) ,
-
-              child: Image(
-                image: AssetImage('${AppUtils.imagesDirectory}check_icon.png'),
+           widgetsHelper.checkedIcon(isDone) ,
+            Flexible(
+              child: Container(
+                width:  double.infinity,
+                margin: EdgeInsets.symmetric(
+                  horizontal: 10.0,
+                  vertical: 0.0
+                ),
+                  child: Text(
+                      text??'Todo item',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: isDone? Color(0xFF211551) : Color(0xFF86829D),
+                      fontWeight: isDone ? FontWeight.bold : FontWeight.w500,
+                    ),
+                  )
               ),
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(
-                horizontal: 10.0,
-                vertical: 0.0
-              ),
-                child: Text(
-                    text??'Todo item',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    color: isDone? Color(0xFF211551) : Color(0xFF86829D),
-                    fontWeight: isDone ? FontWeight.bold : FontWeight.w500,
-                  ),
-                )
             )
           ],
         ),
@@ -140,4 +134,42 @@ class TodoWidget extends StatelessWidget {
     );
   }
 }
+
+
+
+class WidgetsHelper{
+  
+  Container checkedIcon(bool isDone){
+   return Container(
+      width: 20.0,
+      height: 20.0,
+      decoration: BoxDecoration(
+          color: isDone? Color(0xFF7349FE) : Colors.transparent,
+          borderRadius: BorderRadius.circular(6.0),
+          border: isDone ? null : Border.all(
+              color: Color(0xFF86829D),
+              width: 1.5
+          )
+      ) ,
+
+      child: Image(
+        image: AssetImage('${AppUtils.imagesDirectory}check_icon.png'),
+      ),
+    );
+  }  
+  
+}
+
+
+
+
+
+class MyScrollBehavior extends ScrollBehavior{
+  @override
+  Widget buildViewportChrome(BuildContext context, Widget child, AxisDirection axisDirection) {
+
+    return child;
+  }
+}
+
 
